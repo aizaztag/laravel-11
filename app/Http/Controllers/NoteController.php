@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class NoteController extends Controller
 {
@@ -12,9 +13,11 @@ class NoteController extends Controller
      */
     public function index()
     {
-        $notes = Note::query()
-            ->where('user_id', request()->user()->id)
-            ->orderBy('created_at', 'desc')
+        // Using dependency injection to get the authenticated user
+        $user = auth()->user();
+        // Retrieving notes associated with the authenticated user
+        $notes = $user->notes()
+            ->latest() // You can use latest() instead of orderBy('created_at', 'desc')
             ->paginate();
         return view('note.index', ['notes' => $notes]);
     }
@@ -32,16 +35,19 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate(
-            [
-                'note' => ['required', 'string']
-            ]
-        );
+        // Validate incoming request data
+        $data = $request->validate([
+                                       'note' => ['required', 'string']
+                                   ]);
 
+        // Associate the note with the authenticated user
         $data['user_id'] = $request->user()->id;
+
+        // Create the note
         $note = Note::create($data);
 
-        return to_route('note.show', $note)->with('message', 'Note was create');
+        // Redirect to the show route for the created note with a success message
+        return Redirect::route('note.show', $note)->with('message', 'Note was created');
     }
 
     /**
