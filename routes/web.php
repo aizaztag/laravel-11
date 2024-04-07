@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\NoteApiController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\AddContextMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +20,10 @@ Route::get('benchmark', function (){
 
 });
 
+//enum casting
 Route::get('product-store', [ProductController::class, 'index']);
-Route::get('product-get', [ProductController::class, 'show']);
+Route::get('product-get', [ProductController::class, 'show'])
+        ->middleware(AddContextMiddleware::class);//Context
 
 
 

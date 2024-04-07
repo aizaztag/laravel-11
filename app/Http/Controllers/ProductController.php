@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Enums\ProductStatusEnum;
+use Illuminate\Support\Facades\Context;
 
 
 class ProductController extends Controller
@@ -31,6 +32,8 @@ class ProductController extends Controller
 
     public function show()
     {
+       // dd(Context::get('trace_id'));
+        info('show product');
         $product  = Product::where("status" , ProductStatusEnum::Active)->pluck('status');
 
         dd($product);
