@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 
 class NoteController extends Controller
 {
@@ -58,6 +59,7 @@ class NoteController extends Controller
         if ($note->user_id !== request()->user()->id) {
             abort(403);
         }
+
         return view('note.show', ['note' => $note]);
     }
 
@@ -88,7 +90,11 @@ class NoteController extends Controller
 
         $note->update($data);
 
-        return to_route('note.show', $note)->with('message', 'Note was updated');
+        return Redirect::route('note.show', $note)->with(
+            //custom macro defined in AppServiceProvider boot method
+            response()->flash('tahnks', 'success')
+        );
+
     }
 
     /**

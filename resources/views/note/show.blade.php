@@ -1,4 +1,14 @@
 <x-app-layout>
+
+    @if(session()->has('flash_message'))
+        <div class="alert alert-{{ session('flash_message.type') }}">
+            {{--custom response macro session flash--}}
+            {{ session('flash_message.message') }}
+            {{ session('flash_test.message') }}
+        </div>
+    @endif
+
+
     <div class="note-container single-note">
         <div class="note-header">
             <h1 class="text-3xl py-4">Note: {{ $note->created_at }}</h1>

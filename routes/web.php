@@ -1,8 +1,23 @@
 <?php
 
+use App\Http\Controllers\Api\NoteApiController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+
+
+Route::get('benchmark', function (){
+    dd(Auth::user());
+    return \Illuminate\Support\Benchmark::measure(
+        [
+            fn() => \App\Models\Note::all()
+        ]
+    );
+
+});
+
 
 Route::redirect('/', '/note')->name('dashboard');
 
@@ -25,3 +40,6 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::get('api/note', [NoteApiController::class, 'index']);
+
