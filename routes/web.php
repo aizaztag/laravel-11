@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\NoteApiController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,11 @@ Route::get('benchmark', function (){
     );
 
 });
+
+Route::get('product-store', [ProductController::class, 'index']);
+Route::get('product-get', [ProductController::class, 'show']);
+
+
 
 
 Route::redirect('/', '/note')->name('dashboard');
