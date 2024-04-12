@@ -1,46 +1,28 @@
 <?php
 
-use App\Http\Controllers\Api\NoteApiController;
-use App\Http\Controllers\NoteController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Middleware\AddContextMiddleware;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
-
-
-Route::get('benchmark', function (){
-    dd(Auth::user());
-    return \Illuminate\Support\Benchmark::measure(
-        [
-            fn() => \App\Models\Note::all()
-        ]
-    );
-
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
-//enum casting
-Route::get('product-store', [ProductController::class, 'index']);
-Route::get('product-get', [ProductController::class, 'show'])
-        ->middleware(AddContextMiddleware::class);//Context
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/feature1/index', [\App\Http\Controllers\Feature1Controller::class, 'index'] )->middleware(['auth', 'verified'])->name('feature1.index');
+Route::post('/feature1/calculate', [\App\Http\Controllers\Feature1Controller::class, 'calculate'] )->middleware(['auth', 'verified'])->name('feature1.calculate');
 
+Route::get('/feature2/index', [\App\Http\Controllers\Feature2Controller::class, 'index'] )->middleware(['auth', 'verified'])->name('feature2.index');
 
-
-Route::redirect('/', '/note')->name('dashboard');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    // Route::get('/note', [NoteController::class, 'index'])->name('note.index');
-    // Route::get('/note/create', [NoteController::class, 'create'])->name('note.create');
-    // Route::post('/note', [NoteController::class, 'store'])->name('note.store');
-    // Route::get('/note/{id}', [NoteController::class, 'show'])->name('note.show');
-    // Route::get('/note/{id}/edit', [NoteController::class, 'edit'])->name('note.edit');
-    // Route::put('/note/{id}', [NoteController::class, 'update'])->name('note.update');
-    // Route::delete('/note/{id}', [NoteController::class, 'destroy'])->name('note.destroy');
-
-    Route::resource('note', NoteController::class);
-});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,7 +30,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
-
-Route::get('api/note', [NoteApiController::class, 'index']);
-
+require __DIR__.'/auth.php';
