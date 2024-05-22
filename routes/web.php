@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\NoteApiController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -48,7 +49,31 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+//require __DIR__ . '/auth.php';
 
 Route::get('api/note', [NoteApiController::class, 'index']);
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/messages', [HomeController::class, 'messages'])
+    ->name('messages');
+Route::post('/message', [HomeController::class, 'message'])
+    ->name('message');
+
+//new in laravel
+Route::get('fluent/helper', [\App\Http\Controllers\NewInLaravelController::class,'helperFluent']);
+Route::get('collection/select/update', [\App\Http\Controllers\NewInLaravelController::class,'collectionSelectUpdate']);
+Route::get('lateral/join', [\App\Http\Controllers\NewInLaravelController::class,'lateralJoin']);
+Route::get('collect/select', [\App\Http\Controllers\NewInLaravelController::class,'collectSelect']);
+
+
+//tips
+Route::get('model/increment/method', [\App\Http\Controllers\TipsController::class,'incrementMethodModel']);
+Route::get('model/findOrFail', [\App\Http\Controllers\TipsController::class,'findOrFail']);
+Route::get('model/firstOrCreate', [\App\Http\Controllers\TipsController::class,'firstOrCreate']);
+Route::get('model/relationship/with/conditions', [\App\Http\Controllers\TipsController::class,'relationshipWithConditions']);
+Route::get('model/where/x', [\App\Http\Controllers\TipsController::class,'whereX']);
+Route::get('model/when', [\App\Http\Controllers\TipsController::class,'when']);
+Route::get('model/withDefault', [\App\Http\Controllers\TipsController::class,'withDefault']);
